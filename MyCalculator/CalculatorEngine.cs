@@ -18,7 +18,6 @@ namespace MyCalculator
         private string curentUserInput = string.Empty;
         private string display = string.Empty;
         private List<string> UserInput = new List<string>();
-        private static int operandsCount = 0;
 
         public CalculatorEngine()
         {
@@ -28,7 +27,31 @@ namespace MyCalculator
         public void AddDigit(string argNumber)
         {
             CurrentInput += argNumber;
-            Display += argNumber;
+
+            if (double.TryParse(CurrentInput, out double number))
+            {
+                if(number != (int)number)
+                {
+                    Display = string.Join(" ", UserInput) + " " + number.ToString();
+                }
+                else
+                {
+                    Display = string.Join(" ", UserInput) + " " + number.ToString("N0");
+                }
+            }
+            else
+            {
+                Display = CurrentInput;
+            }
+        }
+
+        public void AddDecimalPoint()
+        {
+            if (!CurrentInput.Contains("."))
+            {
+                CurrentInput += ".";
+                Display = string.Join(" ", UserInput) + " " + CurrentInput;
+            }
         }
 
         public string Display
@@ -56,7 +79,18 @@ namespace MyCalculator
             private set
             {
                 _result = value;
-                OnPropertyChanged(nameof(Result));
+                OnPropertyChanged(nameof(DisplayResult));
+            }
+        }
+
+        public string DisplayResult
+        {
+            get { 
+                if (_result != (int)_result)
+                {
+                    return _result.ToString();
+                }
+                return _result.ToString("N0"); 
             }
         }
 
@@ -64,44 +98,91 @@ namespace MyCalculator
         {
             UserInput.Clear();
             CurrentInput = string.Empty;
+            Display = 0.ToString();
             Result = 0;
         }
 
         public void ClearLastInput()
         {
-            if (UserInput.Count > 0 && CurrentInput.Equals(""))
+            if (UserInput.Count > 0)
             {
                 UserInput.RemoveAt(UserInput.Count - 1);
+                Display = string.Join(" ", UserInput);
             }
             else 
             { 
-                CurrentInput = string.Empty; 
+                Display = 0.ToString();
+            }
+
+            CurrentInput = string.Empty;
+        }
+
+        public void ClearLastDigit()
+        {
+            if (CurrentInput.Length > 0)
+            {
+                CurrentInput = CurrentInput.Remove(CurrentInput.Length - 1);
+                Display = string.Join(" ", UserInput) + " " + CurrentInput;
             }
         }
 
         public void Calculate()
         {
-            UserInput.Add(curentUserInput);
+            UserInput.Add(CurrentInput);
             string infix = string.Join(" ", UserInput);
             string postfix = ConvertToPostfix(infix);
             Result = EvaluatePostfix(postfix);
             UserInput.Clear();
-            Display =string.Empty;
+            Display = string.Empty;
+            CurrentInput = string.Empty;
+        }
+
+        private bool CheckOperatorAdd(string argOperator)
+        {
+
+            if (argOperator == "sqrt" || argOperator == "1/x")
+            {
+                return true;
+            }
+
+            if (UserInput.Count > 0 && IsOperator(UserInput[UserInput.Count - 1]))
+            {
+                return false;
+            }
+            return true;
         }
 
         public void AddOperator(string argOperator)
         {
-            UserInput.Add(argOperator);
+            if(UserInput.Count == 0 && CurrentInput == string.Empty && argOperator != "-")
+            {
+                return;
+            }
+            else if (UserInput.Count == 0 && CurrentInput == string.Empty && argOperator == "-")
+            {
+                CurrentInput = "-";
+                Display = CurrentInput;
+                return;
+            }
 
             if (CurrentInput == string.Empty)
             {
+                if (!CheckOperatorAdd(argOperator))
+                {
+                    return;
+                }
                 Display += formatOperator(argOperator);
             }
             else
             {
                 UserInput.Add(curentUserInput);
+                if (!CheckOperatorAdd(argOperator))
+                {
+                    return;
+                }
                 Display += " " + formatOperator(argOperator) + " ";
             }
+            UserInput.Add(argOperator);
             CurrentInput = string.Empty;
         }
 
@@ -136,18 +217,18 @@ namespace MyCalculator
                 {
                     output.Add(token);
                 }
-                else if (token == "(")
-                {
-                    operators.Push(token);
-                }
-                else if (token == ")")
-                {
-                    while (operators.Count > 0 && operators.Peek() != "(")
-                    {
-                        output.Add(operators.Pop());
-                    }
-                    operators.Pop(); 
-                }
+                //else if (token == "(")
+                //{
+                //    operators.Push(token);
+                //}
+                //else if (token == ")")
+                //{
+                //    while (operators.Count > 0 && operators.Peek() != "(")
+                //    {
+                //        output.Add(operators.Pop());
+                //    }
+                //    operators.Pop(); 
+                //}
                 else 
                 {
                     bool isUnary = (i == 0 || IsOperator(tokens[i - 1])) && (token == "sqrt" || token == "1/x" || token == "-");
@@ -177,7 +258,7 @@ namespace MyCalculator
 
         private static bool IsOperator(string token)
         {
-            return token == "+" || token == "-" || token == "*" || token == "/" || token == "pow";
+            return token == "+" || token == "-" || token == "*" || token == "/" || token == "pow" || token == "%";
         }
 
         private static int Precedence(string op)
@@ -189,6 +270,7 @@ namespace MyCalculator
                     return 1;
                 case "*":
                 case "/":
+                case "%":
                     return 2;
                 case "pow":
                     return 3;
@@ -263,6 +345,8 @@ namespace MyCalculator
                     return left / right;
                 case "pow":
                     return Math.Pow(left, right);
+                case "%":
+                    return left % right;
                 default:
                     throw new InvalidOperationException("Unsupported operator: " + op);
             }

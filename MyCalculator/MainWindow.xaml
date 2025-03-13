@@ -23,7 +23,7 @@
         <Grid Grid.Row="0" Grid.Column="0" Margin="0,0,0,288" Grid.RowSpan="2">
             <TextBlock Name="UserInput" Text="{Binding Engine.Display}" VerticalAlignment="Top" HorizontalAlignment="Right"
                        FontSize="34" FontWeight="Bold"/>
-            <TextBlock Name="CalculationResult" Text="{Binding Engine.Result}" VerticalAlignment="Bottom" HorizontalAlignment="Right"
+            <TextBlock Name="CalculationResult" Text="{Binding Engine.DisplayResult}" VerticalAlignment="Bottom" HorizontalAlignment="Right"
                        FontSize="34" FontWeight="Bold"/>
         </Grid>
 
@@ -40,10 +40,10 @@
 
         <Grid Grid.Row="1" Grid.Column="0" Margin="0,201,0,0">
             <UniformGrid Rows="6" Columns="4">
-                <Button FontWeight="Bold" FontSize="25" Content="%" Click="Button_Click"/>
-                <Button FontWeight="Bold" FontSize="25" Content="CE" Click="Button_Click"/>
+                <Button FontWeight="Bold" FontSize="25" Content="%" Click="Button_Click_Operator"/>
+                <Button FontWeight="Bold" FontSize="25" Content="CE" Click="Button_Click_Clear_Last"/>
                 <Button FontWeight="Bold" FontSize="25" Content="C" Click="Button_Click_Clear"/>
-                <Button Click="Button_Click">
+                <Button Click="Button_Click_Clear_Last_Digit">
                     <TextBlock FontWeight="Bold" FontFamily="Segoe MDL2 Assets" FontSize="25" Text="&#xE94F;" />
                 </Button>
                 <Button FontWeight="Bold" FontSize="25" Content="1/X" Click="Button_Click_Operator_One_Over"/>
@@ -74,7 +74,7 @@
                 <Button FontWeight="Bold" FontSize="25" Content="+" Click="Button_Click_Operator"/>
                 <Button FontWeight="Bold" FontSize="25" Content="&#x00B1;" Click="Button_Click"/>
                 <Button FontWeight="Bold" FontSize="25" Content="0" Click="Button_Click_Add_Digit"/>
-                <Button FontWeight="Bold" FontSize="25" Content="." Click="Button_Click"/>
+                <Button FontWeight="Bold" FontSize="25" Content="." Click="Button_Click_Add_Dot"/>
                 <Button FontWeight="Bold" FontSize="25" Content="=" Click="Button_Click_Equal"/>
             </UniformGrid>
         </Grid>
