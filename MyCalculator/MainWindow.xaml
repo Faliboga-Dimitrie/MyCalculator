@@ -5,8 +5,79 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:MyCalculator"
         mc:Ignorable="d"
-        Title="MainWindow" Height="450" Width="800">
+        Title="MainWindow" Height="472" Width="800"
+        ResizeMode="NoResize">
+    <Window.DataContext>
+        <local:CalculatorManager>
+
+        </local:CalculatorManager>
+    </Window.DataContext>
+
     <Grid>
 
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+
+        <Grid Grid.Row="0" Grid.Column="0" Margin="0,0,0,288" Grid.RowSpan="2">
+            <TextBlock Name="UserInput" Text="{Binding Engine.Display}" VerticalAlignment="Top" HorizontalAlignment="Right"
+                       FontSize="34" FontWeight="Bold"/>
+            <TextBlock Name="CalculationResult" Text="{Binding Engine.Result}" VerticalAlignment="Bottom" HorizontalAlignment="Right"
+                       FontSize="34" FontWeight="Bold"/>
+        </Grid>
+
+        <Grid Grid.Row="1" Grid.Column="0" Background="LightBlue" Margin="0,146,0,233">
+            <UniformGrid Rows="1" Columns="6">
+                <Button FontWeight="Bold" FontSize="25" Content="MC" Click="Button_Click" />
+                <Button FontWeight="Bold" FontSize="25" Content="MR" Click="Button_Click"/>
+                <Button FontWeight="Bold" FontSize="25" Content="M+" Click="Button_Click"/>
+                <Button FontWeight="Bold" FontSize="25" Content="M-" Click="Button_Click"/>
+                <Button FontWeight="Bold" FontSize="25" Content="MS" Click="Button_Click"/>
+                <Button FontWeight="Bold" FontSize="25" Content="M" Click="Button_Click"/>
+            </UniformGrid>
+        </Grid>
+
+        <Grid Grid.Row="1" Grid.Column="0" Margin="0,201,0,0">
+            <UniformGrid Rows="6" Columns="4">
+                <Button FontWeight="Bold" FontSize="25" Content="%" Click="Button_Click"/>
+                <Button FontWeight="Bold" FontSize="25" Content="CE" Click="Button_Click"/>
+                <Button FontWeight="Bold" FontSize="25" Content="C" Click="Button_Click_Clear"/>
+                <Button Click="Button_Click">
+                    <TextBlock FontWeight="Bold" FontFamily="Segoe MDL2 Assets" FontSize="25" Text="&#xE94F;" />
+                </Button>
+                <Button FontWeight="Bold" FontSize="25" Content="1/X" Click="Button_Click_Operator_One_Over"/>
+                <Button Click="Button_Click_Operator_Pow">
+                    <TextBlock FontWeight="Bold" FontSize="20" HorizontalAlignment="Center" VerticalAlignment="Center">
+                    <Run Text="X" />
+                    <Run Text="2" FontWeight="Bold" FontSize="15" BaselineAlignment="Superscript" />
+                    </TextBlock>
+                </Button>
+                <Button Click="Button_Click_Operator_Sqrt">
+                    <TextBlock FontWeight="Bold" FontSize="25" HorizontalAlignment="Center" VerticalAlignment="Center">
+                    <Run Text="&#x221A;" />
+                    <Run Text="x" FontWeight="Bold" FontSize="25" BaselineAlignment="TextBottom" />
+                    </TextBlock>
+                </Button>
+                <Button FontWeight="Bold" FontSize="25" Content="&#x00F7;" Click="Button_Click_Operator_Div" Height="42" VerticalAlignment="Top"/>
+                <Button FontWeight="Bold" FontSize="25" Content="7" Click="Button_Click_Add_Digit"/>
+                <Button FontWeight="Bold" FontSize="25" Content="8" Click="Button_Click_Add_Digit"/>
+                <Button FontWeight="Bold" FontSize="25" Content="9" Click="Button_Click_Add_Digit"/>
+                <Button FontWeight="Bold" FontSize="25" Content="&#x00D7;" Click="Button_Click_Operator_Mul"/>
+                <Button FontWeight="Bold" FontSize="25" Content="4" Click="Button_Click_Add_Digit"/>
+                <Button FontWeight="Bold" FontSize="25" Content="5" Click="Button_Click_Add_Digit"/>
+                <Button FontWeight="Bold" FontSize="25" Content="6" Click="Button_Click_Add_Digit"/>
+                <Button FontWeight="Bold" FontSize="25" Content="-" Click="Button_Click_Operator"/>
+                <Button FontWeight="Bold" FontSize="25" Content="1" Click="Button_Click_Add_Digit"/>
+                <Button FontWeight="Bold" FontSize="25" Content="2" Click="Button_Click_Add_Digit"/>
+                <Button FontWeight="Bold" FontSize="25" Content="3" Click="Button_Click_Add_Digit"/>
+                <Button FontWeight="Bold" FontSize="25" Content="+" Click="Button_Click_Operator"/>
+                <Button FontWeight="Bold" FontSize="25" Content="&#x00B1;" Click="Button_Click"/>
+                <Button FontWeight="Bold" FontSize="25" Content="0" Click="Button_Click_Add_Digit"/>
+                <Button FontWeight="Bold" FontSize="25" Content="." Click="Button_Click"/>
+                <Button FontWeight="Bold" FontSize="25" Content="=" Click="Button_Click_Equal"/>
+            </UniformGrid>
+        </Grid>
     </Grid>
+
 </Window>
