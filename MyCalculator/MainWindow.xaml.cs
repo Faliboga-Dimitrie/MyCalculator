@@ -122,17 +122,17 @@ namespace MyCalculator
 
         private void Button_Click_Operator_Pow(object sender, RoutedEventArgs e)
         {
-            (DataContext as CalculatorManager).Engine.AddOperator("pow");
+            (DataContext as CalculatorManager).Engine.AddOperator("^");
         }
 
         private void Button_Click_Operator_Sqrt(object sender, RoutedEventArgs e)
         {
-            (DataContext as CalculatorManager).Engine.AddOperator("sqrt");
+            (DataContext as CalculatorManager).Engine.AddOperator("√");
         }
 
         private void Button_Click_Operator_One_Over(object sender, RoutedEventArgs e)
         {
-            (DataContext as CalculatorManager).Engine.AddOperator("1/x");
+            (DataContext as CalculatorManager).Engine.AddOperator("1/");
         }
 
         private void Button_Click_Clear(object sender, RoutedEventArgs e)

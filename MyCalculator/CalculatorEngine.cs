@@ -28,21 +28,34 @@ namespace MyCalculator
         {
             CurrentInput += argNumber;
 
-            if (double.TryParse(CurrentInput, out double number))
+            if (UserInput.Count > 0 && !IsBinaryOperator(UserInput[UserInput.Count - 1]) && !IsUnaryOperator(UserInput[UserInput.Count - 1]))
             {
-                if(number != (int)number)
-                {
-                    Display = string.Join(" ", UserInput) + " " + number.ToString();
-                }
-                else
-                {
-                    Display = string.Join(" ", UserInput) + " " + number.ToString("N0");
-                }
+                UserInput[UserInput.Count - 1] = CurrentInput;
             }
             else
             {
-                Display = CurrentInput;
+                UserInput.Add(CurrentInput);
             }
+
+            CalculateCascade();
+
+            Display = string.Join(" ", UserInput);
+
+            //if (double.TryParse(CurrentInput, out double number))
+            //{
+            //    if (number != (int)number)
+            //    {
+            //        Display = string.Join(" ", UserInput) + " " + number.ToString();
+            //    }
+            //    else
+            //    {
+            //        Display = string.Join(" ", UserInput) + " " + number.ToString("N0");
+            //    }
+            //}
+            //else
+            //{
+            //    Display = CurrentInput;
+            //}
         }
 
         public void AddDecimalPoint()
@@ -115,6 +128,7 @@ namespace MyCalculator
             }
 
             CurrentInput = string.Empty;
+            Result = 0;
         }
 
         public void ClearLastDigit()
@@ -124,6 +138,13 @@ namespace MyCalculator
                 CurrentInput = CurrentInput.Remove(CurrentInput.Length - 1);
                 Display = string.Join(" ", UserInput) + " " + CurrentInput;
             }
+        }
+
+        private void CalculateCascade()
+        {
+            string infix = string.Join(" ", UserInput);
+            string postfix = ConvertToPostfix(infix);
+            Result = EvaluatePostfix(postfix);
         }
 
         public void Calculate()
@@ -145,7 +166,7 @@ namespace MyCalculator
                 return true;
             }
 
-            if (UserInput.Count > 0 && IsOperator(UserInput[UserInput.Count - 1]))
+            if (UserInput.Count > 0 && IsBinaryOperator(UserInput[UserInput.Count - 1]))
             {
                 return false;
             }
@@ -154,7 +175,7 @@ namespace MyCalculator
 
         public void AddOperator(string argOperator)
         {
-            if(UserInput.Count == 0 && CurrentInput == string.Empty && argOperator != "-")
+            if(UserInput.Count == 0 && CurrentInput == string.Empty && argOperator != "-" && !IsUnaryOperator(argOperator))
             {
                 return;
             }
@@ -171,34 +192,18 @@ namespace MyCalculator
                 {
                     return;
                 }
-                Display += formatOperator(argOperator);
+                Display += argOperator;
             }
             else
             {
-                UserInput.Add(curentUserInput);
                 if (!CheckOperatorAdd(argOperator))
                 {
                     return;
                 }
-                Display += " " + formatOperator(argOperator) + " ";
+                Display += " " + argOperator + " ";
             }
             UserInput.Add(argOperator);
             CurrentInput = string.Empty;
-        }
-
-        private static string formatOperator(string op)
-        {
-            switch (op)
-            {
-                case "pow":
-                    return "^";
-                case "sqrt":
-                    return "√";
-                case "1/x":
-                    return "1/";
-                default:
-                    return op;
-            }
         }
 
         private static string ConvertToPostfix(string infix)
@@ -231,7 +236,7 @@ namespace MyCalculator
                 //}
                 else 
                 {
-                    bool isUnary = (i == 0 || IsOperator(tokens[i - 1])) && (token == "sqrt" || token == "1/x" || token == "-");
+                    bool isUnary = (i == 0 || IsBinaryOperator(tokens[i - 1])) && (token == "sqrt" || token == "1/x" || token == "-");
 
                     if (isUnary)
                     {
@@ -256,9 +261,9 @@ namespace MyCalculator
             return string.Join(" ", output);
         }
 
-        private static bool IsOperator(string token)
+        private static bool IsBinaryOperator(string token)
         {
-            return token == "+" || token == "-" || token == "*" || token == "/" || token == "pow" || token == "%";
+            return token == "+" || token == "-" || token == "*"|| token == "/" || token == "^" || token == "%";
         }
 
         private static int Precedence(string op)
@@ -272,10 +277,10 @@ namespace MyCalculator
                 case "/":
                 case "%":
                     return 2;
-                case "pow":
+                case "^":
                     return 3;
-                case "sqrt":
-                case "1/x":
+                case "√":
+                case "1/":
                     return 4;
                 default:
                     return 0;
@@ -313,16 +318,16 @@ namespace MyCalculator
 
         private static bool IsUnaryOperator(string token)
         {
-            return token == "sqrt" || token == "1/x";
+            return token == "√" || token == "1/";
         }
 
         private static double PerformUnaryOperation(double operand, string op)
         {
             switch (op)
             {
-                case "sqrt":
+                case "√":
                     return Math.Sqrt(operand);
-                case "1/x":
+                case "1/":
                     if (operand == 0) throw new DivideByZeroException("Division by zero is not allowed.");
                     return 1 / operand;
                 default:
@@ -343,7 +348,7 @@ namespace MyCalculator
                 case "/":
                     if (right == 0) throw new DivideByZeroException("Division by zero is not allowed.");
                     return left / right;
-                case "pow":
+                case "^":
                     return Math.Pow(left, right);
                 case "%":
                     return left % right;
