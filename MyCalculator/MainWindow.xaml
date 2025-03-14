@@ -29,16 +29,24 @@
 
         <Grid Grid.Row="1" Grid.Column="0" Background="LightBlue" Margin="0,146,0,233">
             <UniformGrid Rows="1" Columns="6">
-                <Button FontWeight="Bold" FontSize="25" Content="MC" Click="Button_Click" />
-                <Button FontWeight="Bold" FontSize="25" Content="MR" Click="Button_Click"/>
-                <Button FontWeight="Bold" FontSize="25" Content="M+" Click="Button_Click"/>
-                <Button FontWeight="Bold" FontSize="25" Content="M-" Click="Button_Click"/>
-                <Button FontWeight="Bold" FontSize="25" Content="MS" Click="Button_Click"/>
-                <Button FontWeight="Bold" FontSize="25" Content="M" Click="Button_Click"/>
+                <Button FontWeight="Bold" FontSize="25" Content="MC" Click="Button_Click_Memory_Clear" />
+                <Button FontWeight="Bold" FontSize="25" Content="MR" Click="Button_Click_Memory_Retrieve"/>
+                <Button FontWeight="Bold" FontSize="25" Content="M+" Click="Button_Click_Memory_Add"/>
+                <Button FontWeight="Bold" FontSize="25" Content="M-" Click="Button_Click_Memory_Subtract"/>
+                <Button FontWeight="Bold" FontSize="25" Content="MS" Click="Button_Click_Memory_Store"/>
+                <Button FontWeight="Bold" FontSize="25" Content="M" Click="Button_Click_Display_Memory"/>
             </UniformGrid>
         </Grid>
 
-        <Grid Grid.Row="1" Grid.Column="0" Margin="0,201,0,0">
+        <Grid Name="MemoryGrid" Visibility="{Binding MemoryGridVisibility}" Grid.Row="1" Grid.Column="0" Margin="0,201,0,0">
+            <ListBox x:Name="MyListBox" 
+         ItemsSource="{Binding Engine.MemoryValues}" 
+         HorizontalContentAlignment="Right" 
+         FontSize="25" 
+         SelectionChanged="MyListBox_SelectionChanged"/>
+        </Grid>
+
+        <Grid Name ="MainGrid" Visibility="{Binding MainGridVisibility}" Grid.Row="1" Grid.Column="0" Margin="0,201,0,0">
             <UniformGrid Rows="6" Columns="4">
                 <Button FontWeight="Bold" FontSize="25" Content="%" Click="Button_Click_Operator"/>
                 <Button FontWeight="Bold" FontSize="25" Content="CE" Click="Button_Click_Clear_Last"/>

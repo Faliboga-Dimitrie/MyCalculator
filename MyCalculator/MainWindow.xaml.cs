@@ -1,4 +1,5 @@
-﻿using System.Text;
+﻿using System.ComponentModel;
+using System.Text;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
@@ -21,6 +22,29 @@ namespace MyCalculator
         {
             InitializeComponent();
             this.KeyDown += new KeyEventHandler(MainWindow_KeyDown);
+        }
+
+        
+        private void Button_Click_Display_Memory(object sender, RoutedEventArgs e)
+        {
+            if ((DataContext as CalculatorManager).MainGridVisibility == Visibility.Visible)
+            {
+                (DataContext as CalculatorManager).MainGridVisibility = Visibility.Collapsed;
+                (DataContext as CalculatorManager).MemoryGridVisibility = Visibility.Visible;
+            }
+            else
+            {
+                (DataContext as CalculatorManager).MainGridVisibility = Visibility.Visible;
+                (DataContext as CalculatorManager).MemoryGridVisibility = Visibility.Collapsed;
+            }
+        }
+        private void MyListBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            if (MyListBox.SelectedIndex != -1) // Ensure an item is selected
+            {
+                int selectedIndex = MyListBox.SelectedIndex; // Get the index
+                (DataContext as CalculatorManager).Engine.MemoryIndexChanged(selectedIndex);
+            }
         }
 
         private void MainWindow_KeyDown(object sender, KeyEventArgs e)
@@ -110,6 +134,30 @@ namespace MyCalculator
             }    
         }
 
+        private void Button_Click_Memory_Store(object sender, RoutedEventArgs e)
+        {
+            (DataContext as CalculatorManager).Engine.MemoryStore();
+        }
+
+        private void Button_Click_Memory_Clear(object sender, RoutedEventArgs e)
+        {
+            (DataContext as CalculatorManager).Engine.MemoryClear();
+        }
+
+        private void Button_Click_Memory_Retrieve(object sender, RoutedEventArgs e)
+        {
+            (DataContext as CalculatorManager).Engine.MemoryRecall();
+        }
+
+        private void Button_Click_Memory_Subtract(object sender, RoutedEventArgs e)
+        {
+            (DataContext as CalculatorManager).Engine.MemoryMinus();
+        }
+
+        private void Button_Click_Memory_Add(object sender, RoutedEventArgs e)
+        {
+            (DataContext as CalculatorManager).Engine.MemoryPlus();
+        }
         private void Button_Click_Operator_Mul(object sender, RoutedEventArgs e)
         {
             (DataContext as CalculatorManager).Engine.AddOperator("*");

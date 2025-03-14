@@ -1,9 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows;
+using System.Windows.Input;
 
 namespace MyCalculator
 {
@@ -14,10 +17,78 @@ namespace MyCalculator
         {
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }
+
+
         private double _result;
         private string curentUserInput = string.Empty;
         private string display = string.Empty;
         private List<string> UserInput = new List<string>();
+
+        private ObservableCollection<double> _memoryValue = new ObservableCollection<double>();
+        private double _currentValue;
+        private int _memoryIndex;
+
+        public void MemoryStore()
+        {
+            MemoryValue = Result;
+            MemoryValues.Add(MemoryValue);
+            MemoryIndex = MemoryValues.Count - 1;
+            OnPropertyChanged(nameof(MemoryValues));
+        }
+
+        public void MemoryRecall()
+        {
+            Result = MemoryValue;
+            UserInput.Clear();
+            CurrentInput = MemoryValue.ToString();
+            Display = MemoryValue.ToString();
+            UserInput.Add(MemoryValue.ToString());
+        }
+
+        public void MemoryPlus()
+        {
+            MemoryValue += Result;
+            if (MemoryValues.Count > 0)
+            {
+                MemoryValues[MemoryIndex] = MemoryValue;
+            }
+            else
+            {
+                MemoryValues.Add(MemoryValue);
+                MemoryIndex = MemoryValues.Count - 1;
+            }
+            OnPropertyChanged(nameof(MemoryValues));
+        }
+
+        public void MemoryMinus()
+        {
+            MemoryValue -= Result;
+            if (MemoryValues.Count > 0)
+            {
+                MemoryValues[MemoryIndex] = MemoryValue;
+            }
+            else
+            {
+                MemoryValues.Add(MemoryValue);
+                MemoryIndex = MemoryValues.Count - 1;
+            }
+            OnPropertyChanged(nameof(MemoryValues));
+        }
+
+        public void MemoryClear()
+        {
+            MemoryValue = 0;
+            MemoryValues.Clear();
+            MemoryIndex = MemoryValues.Count - 1;
+            OnPropertyChanged(nameof(MemoryValues));
+        }
+
+        public void MemoryIndexChanged(int index)
+        {
+            MemoryIndex = index;
+            MemoryValue = MemoryValues[index];
+            OnPropertyChanged(nameof(MemoryValue));
+        }
 
         public CalculatorEngine()
         {
@@ -96,6 +167,28 @@ namespace MyCalculator
             }
         }
 
+        public double MemoryValue
+        {
+            get => _currentValue;
+            set
+            {
+                _currentValue = value;
+                OnPropertyChanged(nameof(MemoryValue));
+            }
+        }
+
+        public int MemoryIndex { get; set; }
+
+        public ObservableCollection<double> MemoryValues
+        {
+            get => _memoryValue;
+            set
+            {
+                _memoryValue = value;
+                OnPropertyChanged(nameof(MemoryValues));
+            }
+        }
+
         public string DisplayResult
         {
             get { 
@@ -149,7 +242,6 @@ namespace MyCalculator
 
         public void Calculate()
         {
-            UserInput.Add(CurrentInput);
             string infix = string.Join(" ", UserInput);
             string postfix = ConvertToPostfix(infix);
             Result = EvaluatePostfix(postfix);
@@ -161,7 +253,7 @@ namespace MyCalculator
         private bool CheckOperatorAdd(string argOperator)
         {
 
-            if (argOperator == "sqrt" || argOperator == "1/x")
+            if (argOperator == "√" || argOperator == "1/")
             {
                 return true;
             }
@@ -179,10 +271,10 @@ namespace MyCalculator
             {
                 return;
             }
-            else if (UserInput.Count == 0 && CurrentInput == string.Empty && argOperator == "-")
+            else if (CurrentInput == string.Empty && argOperator == "-")
             {
                 CurrentInput = "-";
-                Display = CurrentInput;
+                Display += " -";
                 return;
             }
 
