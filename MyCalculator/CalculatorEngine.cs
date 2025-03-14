@@ -134,7 +134,15 @@ namespace MyCalculator
             if (!CurrentInput.Contains("."))
             {
                 CurrentInput += ".";
-                Display = string.Join(" ", UserInput) + " " + CurrentInput;
+                if(UserInput.Count > 0 && !IsBinaryOperator(UserInput[UserInput.Count - 1]) && !IsUnaryOperator(UserInput[UserInput.Count - 1]))
+                {
+                    UserInput[UserInput.Count - 1] = CurrentInput;
+                }
+                else
+                {
+                    UserInput.Add(CurrentInput);
+                }
+                Display = string.Join(" ", UserInput);
             }
         }
 
@@ -229,7 +237,24 @@ namespace MyCalculator
             if (CurrentInput.Length > 0)
             {
                 CurrentInput = CurrentInput.Remove(CurrentInput.Length - 1);
-                Display = string.Join(" ", UserInput) + " " + CurrentInput;
+                if(UserInput.Count > 0 && !IsBinaryOperator(UserInput[UserInput.Count - 1]) && !IsUnaryOperator(UserInput[UserInput.Count - 1]))
+                {
+                    UserInput[UserInput.Count - 1] = CurrentInput;
+                }
+                else
+                {
+                    UserInput.Add(CurrentInput);
+                }
+
+                if (CurrentInput.Length == 0)
+                {
+                    UserInput.RemoveAt(UserInput.Count - 1);
+                }
+                else
+                {
+                    CalculateCascade();
+                }
+                Display = string.Join(" ", UserInput);
             }
         }
 
