@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
+using System.Globalization;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -27,6 +28,8 @@ namespace MyCalculator
         private ObservableCollection<double> _memoryValue = new ObservableCollection<double>();
         private double _currentValue;
         private int _memoryIndex;
+
+        private bool _isDigitGrouping = true;
 
         public void MemoryStore()
         {
@@ -95,6 +98,18 @@ namespace MyCalculator
             _result = 0;
         }
 
+        private void UpdateDisplay()
+        {
+            if (IsDigitGrouping)
+            {
+                Display = string.Join(" ", UserInput.Select(FormatNumberIfPossible));
+            }
+            else
+            {
+                Display = string.Join(" ", UserInput);
+            }
+        }
+
         public void AddDigit(string argNumber)
         {
             CurrentInput += argNumber;
@@ -110,23 +125,7 @@ namespace MyCalculator
 
             CalculateCascade();
 
-            Display = string.Join(" ", UserInput);
-
-            //if (double.TryParse(CurrentInput, out double number))
-            //{
-            //    if (number != (int)number)
-            //    {
-            //        Display = string.Join(" ", UserInput) + " " + number.ToString();
-            //    }
-            //    else
-            //    {
-            //        Display = string.Join(" ", UserInput) + " " + number.ToString("N0");
-            //    }
-            //}
-            //else
-            //{
-            //    Display = CurrentInput;
-            //}
+            UpdateDisplay();
         }
 
         public void AddDecimalPoint()
@@ -142,8 +141,17 @@ namespace MyCalculator
                 {
                     UserInput.Add(CurrentInput);
                 }
-                Display = string.Join(" ", UserInput);
+                UpdateDisplay();
             }
+        }
+
+        private string FormatNumberIfPossible(string input)
+        {
+            if (double.TryParse(input, NumberStyles.Any, CultureInfo.InvariantCulture, out double number))
+            {
+                return number.ToString("N0", CultureInfo.CurrentCulture);
+            }
+            return input;
         }
 
         public string Display
@@ -187,6 +195,16 @@ namespace MyCalculator
 
         public int MemoryIndex { get; set; }
 
+        public bool IsDigitGrouping
+        {
+            get => _isDigitGrouping;
+            set
+            {
+                _isDigitGrouping = value;
+                OnPropertyChanged(nameof(DisplayResult));
+            }
+        }
+
         public ObservableCollection<double> MemoryValues
         {
             get => _memoryValue;
@@ -200,12 +218,19 @@ namespace MyCalculator
         public string DisplayResult
         {
             get { 
-                if (_result != (int)_result)
+
+                if (_result != (int)_result || !IsDigitGrouping)
                 {
                     return _result.ToString();
                 }
                 return _result.ToString("N0"); 
             }
+        }
+
+        public void UpdateDigitGrouping()
+        {
+            IsDigitGrouping = !IsDigitGrouping;
+            UpdateDisplay();
         }
 
         public void ClearInput()
@@ -221,7 +246,7 @@ namespace MyCalculator
             if (UserInput.Count > 0)
             {
                 UserInput.RemoveAt(UserInput.Count - 1);
-                Display = string.Join(" ", UserInput);
+                UpdateDisplay();
             }
             else 
             { 
@@ -254,7 +279,7 @@ namespace MyCalculator
                 {
                     CalculateCascade();
                 }
-                Display = string.Join(" ", UserInput);
+                UpdateDisplay();
             }
         }
 
@@ -445,7 +470,6 @@ namespace MyCalculator
                 case "√":
                     return Math.Sqrt(operand);
                 case "1/":
-                    if (operand == 0) throw new DivideByZeroException("Division by zero is not allowed.");
                     return 1 / operand;
                 default:
                     throw new InvalidOperationException("Unsupported unary operator: " + op);
@@ -463,12 +487,11 @@ namespace MyCalculator
                 case "*":
                     return left * right;
                 case "/":
-                    if (right == 0) throw new DivideByZeroException("Division by zero is not allowed.");
                     return left / right;
                 case "^":
                     return Math.Pow(left, right);
                 case "%":
-                    return left % right;
+                    return left *(right/100);
                 default:
                     throw new InvalidOperationException("Unsupported operator: " + op);
             }

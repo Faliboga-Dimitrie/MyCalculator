@@ -24,7 +24,7 @@ namespace MyCalculator
             this.KeyDown += new KeyEventHandler(MainWindow_KeyDown);
         }
 
-        
+
         private void Button_Click_Display_Memory(object sender, RoutedEventArgs e)
         {
             if ((DataContext as CalculatorManager).MainGridVisibility == Visibility.Visible)
@@ -117,6 +117,24 @@ namespace MyCalculator
             {
                 (DataContext as CalculatorManager).Engine.ClearInput();
             }
+
+            if ((Keyboard.Modifiers & ModifierKeys.Control) == ModifierKeys.Control)
+            {
+                switch (e.Key)
+                {
+                    case Key.C:
+                        (DataContext as CalculatorManager).CopyToClipboard();
+                        break;
+                    case Key.V:
+                        (DataContext as CalculatorManager).PasteFromClipboard();
+                        break;
+                    case Key.X:
+                        (DataContext as CalculatorManager).CutToClipboard();
+                        break;
+                    default:
+                        break;
+                }
+            }
         }
 
         private void Button_Click(object sender, RoutedEventArgs e)
@@ -131,7 +149,7 @@ namespace MyCalculator
             if (button != null)
             {
                 (DataContext as CalculatorManager).Engine.AddOperator(button.Content.ToString());
-            }    
+            }
         }
 
         private void Button_Click_Memory_Store(object sender, RoutedEventArgs e)
@@ -216,6 +234,47 @@ namespace MyCalculator
         private void Button_Click_Add_Dot(object sender, RoutedEventArgs e)
         {
             (DataContext as CalculatorManager).Engine.AddDecimalPoint();
+        }
+
+        private void SelectStandard_Click(object sender, RoutedEventArgs e)
+        {
+            (DataContext as CalculatorManager).IsStandardMode = true;
+        }
+
+        private void SelectProgrammer_Click(object sender, RoutedEventArgs e)
+        {
+            (DataContext as CalculatorManager).IsStandardMode = false;
+        }
+
+        private void Enable_or_DisableDigitGrouping_Click(object sender, RoutedEventArgs e)
+        {
+            // Handle SubOption 3 click
+            (DataContext as CalculatorManager).Engine.UpdateDigitGrouping();
+        }
+
+        private void Copy_Click(object sender, RoutedEventArgs e)
+        {
+            // Handle SubOption 4 click
+            (DataContext as CalculatorManager).CopyToClipboard();
+        }
+
+        private void Cut_Click(object sender, RoutedEventArgs e)
+        {
+            // Handle SubOption 5 click
+            (DataContext as CalculatorManager).CutToClipboard();
+        }
+
+        private void Paste_Click(object sender, RoutedEventArgs e)
+        {
+            // Handle SubOption 6 click
+            (DataContext as CalculatorManager).PasteFromClipboard();
+        }
+
+        private void Empty_Click(object sender, RoutedEventArgs e)
+        {
+            // Handle SubOption 7 click
+
+
         }
     }
 }
