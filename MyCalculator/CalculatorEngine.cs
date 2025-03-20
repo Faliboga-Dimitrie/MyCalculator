@@ -13,7 +13,7 @@ namespace MyCalculator
 {
     class CalculatorEngine : INotifyPropertyChanged
     {
-        public event PropertyChangedEventHandler? PropertyChanged;
+        public event PropertyChangedEventHandler PropertyChanged;
         public void OnPropertyChanged(string propertyName)
         {
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
@@ -174,7 +174,7 @@ namespace MyCalculator
         {
             if (double.TryParse(input, NumberStyles.Any, CultureInfo.InvariantCulture, out double number))
             {
-                if(number == (int)number)
+                if(number %1 == 0)
                     return number.ToString("N0", CultureInfo.CurrentCulture);
             }
             return input;
@@ -265,11 +265,11 @@ namespace MyCalculator
                     return Convert.ToString((int)Result, NumerationBase);
                 }
 
-                if (Result != (int)Result || !IsDigitGrouping)
+                if (Result % 1 != 0 || !IsDigitGrouping)
                 {
                     return Result.ToString();
                 }
-                return Result.ToString("N0", CultureInfo.InvariantCulture);
+                return Result.ToString("N0");
             }
         }
 
@@ -384,7 +384,12 @@ namespace MyCalculator
 
             if (argOperator == "√" || argOperator == "1/")
             {
-                return true;
+                if(UserInput.Count > 0 && !IsBinaryOperator(UserInput[UserInput.Count - 1]) && !IsUnaryOperator(UserInput[UserInput.Count - 1]))
+                {
+                    return false;
+                }
+
+               return true;
             }
 
             if (UserInput.Count > 0 && IsBinaryOperator(UserInput[UserInput.Count - 1]))
@@ -443,21 +448,9 @@ namespace MyCalculator
                 {
                     output.Add(token);
                 }
-                //else if (token == "(")
-                //{
-                //    operators.Push(token);
-                //}
-                //else if (token == ")")
-                //{
-                //    while (operators.Count > 0 && operators.Peek() != "(")
-                //    {
-                //        output.Add(operators.Pop());
-                //    }
-                //    operators.Pop(); 
-                //}
                 else 
                 {
-                    bool isUnary = (i == 0 || IsBinaryOperator(tokens[i - 1])) && (token == "sqrt" || token == "1/x" || token == "-");
+                    bool isUnary = (token == "√" || token == "1/" || token == "-");
 
                     if (isUnary)
                     {
