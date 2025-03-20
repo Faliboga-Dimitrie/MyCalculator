@@ -118,8 +118,16 @@ namespace MyCalculator
 
         private void ConvertCurrentInputFromHexToDec()
         {
-            double decValue = (double)Convert.ToInt32(CurrentInput, 16);
-            CurrentInput = decValue.ToString();
+            try 
+            {
+                double decValue = (double)Convert.ToInt32(CurrentInput, 16);
+                CurrentInput = decValue.ToString();
+            }
+            catch (Exception)
+            {
+                CurrentInput = "0";
+            }
+
         }
 
         public void AddDigit(string argNumber)
