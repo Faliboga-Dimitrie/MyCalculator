@@ -137,11 +137,6 @@ namespace MyCalculator
             }
         }
 
-        private void Button_Click(object sender, RoutedEventArgs e)
-        {
-            return;
-        }
-
         private void Button_Click_Operator(object sender, RoutedEventArgs e)
         {
             var button = sender as Button;
@@ -150,6 +145,11 @@ namespace MyCalculator
             {
                 (DataContext as CalculatorManager).Engine.AddOperator(button.Content.ToString());
             }
+        }
+
+        private void Button_Click_ChangeSign(object sender, RoutedEventArgs e)
+        {
+            (DataContext as CalculatorManager).Engine.ChangeSign();
         }
 
         private void Button_Click_Memory_Store(object sender, RoutedEventArgs e)
@@ -238,12 +238,18 @@ namespace MyCalculator
 
         private void SelectStandard_Click(object sender, RoutedEventArgs e)
         {
-            (DataContext as CalculatorManager).IsStandardMode = true;
+            (DataContext as CalculatorManager).IsProgrammerMode = false;
+            (DataContext as CalculatorManager).Engine.ChangeNumberBase(10);
+            (DataContext as CalculatorManager).BaseSelection = Visibility.Collapsed;
+            (DataContext as CalculatorManager).HexaToggle = Visibility.Collapsed;
+            (DataContext as CalculatorManager).HexadecimaBaseButtons = Visibility.Collapsed;
+            (DataContext as CalculatorManager).MainGridVisibility = Visibility.Visible;
         }
 
         private void SelectProgrammer_Click(object sender, RoutedEventArgs e)
         {
-            (DataContext as CalculatorManager).IsStandardMode = false;
+            (DataContext as CalculatorManager).IsProgrammerMode = true;
+            (DataContext as CalculatorManager).BaseSelection = Visibility.Visible;
         }
 
         private void Enable_or_DisableDigitGrouping_Click(object sender, RoutedEventArgs e)
@@ -272,9 +278,62 @@ namespace MyCalculator
 
         private void Empty_Click(object sender, RoutedEventArgs e)
         {
-            // Handle SubOption 7 click
+           // Handle SubOption 7 click
+        }
 
+        private void SelectBinary_Click(object sender, RoutedEventArgs e)
+        {
+            // Handle SubOption 8 click
+            (DataContext as CalculatorManager).Engine.ChangeNumberBase(2);
+            (DataContext as CalculatorManager).HexaToggle = Visibility.Collapsed;
+            (DataContext as CalculatorManager).HexadecimaBaseButtons = Visibility.Collapsed;
+            (DataContext as CalculatorManager).MainGridVisibility = Visibility.Visible;
+        }
 
+        private void SelectOctal_Click(object sender, RoutedEventArgs e)
+        {
+            // Handle SubOption 9 click
+            (DataContext as CalculatorManager).Engine.ChangeNumberBase(8);
+            (DataContext as CalculatorManager).HexaToggle = Visibility.Collapsed;
+            (DataContext as CalculatorManager).HexadecimaBaseButtons = Visibility.Collapsed;
+            (DataContext as CalculatorManager).MainGridVisibility = Visibility.Visible;
+        }
+
+        private void SelectDecimal_Click(object sender, RoutedEventArgs e)
+        {
+            // Handle SubOption 10 click
+            (DataContext as CalculatorManager).Engine.ChangeNumberBase(10);
+            (DataContext as CalculatorManager).HexaToggle = Visibility.Collapsed;
+            (DataContext as CalculatorManager).HexadecimaBaseButtons = Visibility.Collapsed;
+            (DataContext as CalculatorManager).MainGridVisibility = Visibility.Visible;
+        }
+
+        private void SelectHexadecimal_Click(object sender, RoutedEventArgs e)
+        {
+            // Handle SubOption 11 click
+            (DataContext as CalculatorManager).Engine.ChangeNumberBase(16);
+            (DataContext as CalculatorManager).HexaToggle = Visibility.Visible;  
+        }
+
+        private void HexaButton_Click(object sender, RoutedEventArgs e)
+        {
+            // Handle SubOption 12 click
+            if((DataContext as CalculatorManager).HexadecimaBaseButtons == Visibility.Visible)
+            {
+                (DataContext as CalculatorManager).HexadecimaBaseButtons = Visibility.Collapsed;
+                (DataContext as CalculatorManager).MainGridVisibility = Visibility.Visible;
+            }
+            else
+            {
+                (DataContext as CalculatorManager).HexadecimaBaseButtons = Visibility.Visible;
+                (DataContext as CalculatorManager).MainGridVisibility = Visibility.Collapsed;
+            }
+        }
+
+        private void About_Click(object sender, RoutedEventArgs e)
+        {
+            // Handle SubOption 13 click
+            MessageBox.Show("Creator: Faliboga Dimitrie Aron \n Class: 10LF331", "About MyCalculator", MessageBoxButton.OK, MessageBoxImage.Information);
         }
     }
 }

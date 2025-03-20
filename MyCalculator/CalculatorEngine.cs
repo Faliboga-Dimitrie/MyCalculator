@@ -27,7 +27,7 @@ namespace MyCalculator
 
         private ObservableCollection<double> _memoryValue = new ObservableCollection<double>();
         private double _currentValue;
-        private int _memoryIndex;
+        private int _numerationBase = 10;
 
         private bool _isDigitGrouping = true;
 
@@ -149,7 +149,8 @@ namespace MyCalculator
         {
             if (double.TryParse(input, NumberStyles.Any, CultureInfo.InvariantCulture, out double number))
             {
-                return number.ToString("N0", CultureInfo.CurrentCulture);
+                if(number == (int)number)
+                    return number.ToString("N0", CultureInfo.CurrentCulture);
             }
             return input;
         }
@@ -195,6 +196,16 @@ namespace MyCalculator
 
         public int MemoryIndex { get; set; }
 
+        public int NumerationBase
+        {
+            get => _numerationBase;
+            set
+            {
+                _numerationBase = value;
+                OnPropertyChanged(nameof(NumerationBase));
+            }
+        }
+
         public bool IsDigitGrouping
         {
             get => _isDigitGrouping;
@@ -231,6 +242,11 @@ namespace MyCalculator
         {
             IsDigitGrouping = !IsDigitGrouping;
             UpdateDisplay();
+        }
+
+        public void ChangeNumberBase(int numerationBase)
+        {
+            NumerationBase = numerationBase;
         }
 
         public void ClearInput()
@@ -279,6 +295,32 @@ namespace MyCalculator
                 {
                     CalculateCascade();
                 }
+                UpdateDisplay();
+            }
+        }
+
+        public void ChangeSign()
+        {
+            if (CurrentInput.Length > 0)
+            {
+                if (CurrentInput[0] == '-')
+                {
+                    CurrentInput = CurrentInput.Remove(0, 1);
+                }
+                else
+                {
+                    CurrentInput = "-" + CurrentInput;
+                }
+
+                if (UserInput.Count > 0 && !IsBinaryOperator(UserInput[UserInput.Count - 1]) && !IsUnaryOperator(UserInput[UserInput.Count - 1]))
+                {
+                    UserInput[UserInput.Count - 1] = CurrentInput;
+                }
+                else
+                {
+                    UserInput.Add(CurrentInput);
+                }
+                CalculateCascade();
                 UpdateDisplay();
             }
         }

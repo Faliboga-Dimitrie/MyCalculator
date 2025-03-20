@@ -33,9 +33,15 @@
                     <MenuItem Header="Paste" Click="Paste_Click"/>
                 </MenuItem>
                 <MenuItem Header="Help">
-                    <MenuItem Header="Sub Option 5" Click="Empty_Click"/>
-                    <MenuItem Header="Sub Option 6" Click="Empty_Click"/>
+                    <MenuItem Header="About" Click="About_Click"/>
                 </MenuItem>
+                <MenuItem Header="Base" Visibility="{Binding BaseSelection}">
+                    <MenuItem Header="Binary" Click="SelectBinary_Click"/>
+                    <MenuItem Header="Octal" Click="SelectOctal_Click"/>
+                    <MenuItem Header="Decimal" Click="SelectDecimal_Click"/>
+                    <MenuItem Header="Hexadecimal" Click="SelectHexadecimal_Click"/>
+                </MenuItem>
+                <MenuItem Header="Toggle Hexadecimal Numbers" Visibility="{Binding HexaToggle}" Click="HexaButton_Click"/>
             </Menu>
         </StackPanel>
 
@@ -64,6 +70,17 @@
          HorizontalContentAlignment="Right" 
          FontSize="25" 
          SelectionChanged="MyListBox_SelectionChanged"/>
+        </Grid>
+
+        <Grid x:Name="HexadecimalInput" Visibility="{Binding HexadecimaBaseButtons}" Grid.Row="3" Grid.Column="0" Margin="0,201,0,0">
+            <UniformGrid>
+                <Button FontWeight="Bold" FontSize="25" Content="A" Click="Empty_Click"/>
+                <Button FontWeight="Bold" FontSize="25" Content="B" Click="Empty_Click"/>
+                <Button FontWeight="Bold" FontSize="25" Content="C" Click="Empty_Click"/>
+                <Button FontWeight="Bold" FontSize="25" Content="D" Click="Empty_Click"/>
+                <Button FontWeight="Bold" FontSize="25" Content="E" Click="Empty_Click"/>
+                <Button FontWeight="Bold" FontSize="25" Content="F" Click="Empty_Click"/>
+            </UniformGrid>
         </Grid>
 
         <Grid Name ="MainGrid" Visibility="{Binding MainGridVisibility}" Grid.Row="3" Grid.Column="0" Margin="0,201,0,0">
@@ -100,7 +117,7 @@
                 <Button FontWeight="Bold" FontSize="25" Content="2" Click="Button_Click_Add_Digit"/>
                 <Button FontWeight="Bold" FontSize="25" Content="3" Click="Button_Click_Add_Digit"/>
                 <Button FontWeight="Bold" FontSize="25" Content="+" Click="Button_Click_Operator"/>
-                <Button FontWeight="Bold" FontSize="25" Content="&#x00B1;" Click="Button_Click"/>
+                <Button FontWeight="Bold" FontSize="25" Content="&#x00B1;" Click="Button_Click_ChangeSign"/>
                 <Button FontWeight="Bold" FontSize="25" Content="0" Click="Button_Click_Add_Digit"/>
                 <Button FontWeight="Bold" FontSize="25" Content="." Click="Button_Click_Add_Dot"/>
                 <Button FontWeight="Bold" FontSize="25" Content="=" Click="Button_Click_Equal"/>
