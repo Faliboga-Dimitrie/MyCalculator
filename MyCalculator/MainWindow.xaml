@@ -74,12 +74,12 @@
 
         <Grid x:Name="HexadecimalInput" Visibility="{Binding HexadecimaBaseButtons}" Grid.Row="3" Grid.Column="0" Margin="0,201,0,0">
             <UniformGrid>
-                <Button FontWeight="Bold" FontSize="25" Content="A" Click="Empty_Click"/>
-                <Button FontWeight="Bold" FontSize="25" Content="B" Click="Empty_Click"/>
-                <Button FontWeight="Bold" FontSize="25" Content="C" Click="Empty_Click"/>
-                <Button FontWeight="Bold" FontSize="25" Content="D" Click="Empty_Click"/>
-                <Button FontWeight="Bold" FontSize="25" Content="E" Click="Empty_Click"/>
-                <Button FontWeight="Bold" FontSize="25" Content="F" Click="Empty_Click"/>
+                <Button FontWeight="Bold" FontSize="25" Content="A" Click="Button_Click_Add_Digit"/>
+                <Button FontWeight="Bold" FontSize="25" Content="B" Click="Button_Click_Add_Digit"/>
+                <Button FontWeight="Bold" FontSize="25" Content="C" Click="Button_Click_Add_Digit"/>
+                <Button FontWeight="Bold" FontSize="25" Content="D" Click="Button_Click_Add_Digit"/>
+                <Button FontWeight="Bold" FontSize="25" Content="E" Click="Button_Click_Add_Digit"/>
+                <Button FontWeight="Bold" FontSize="25" Content="F" Click="Button_Click_Add_Digit"/>
             </UniformGrid>
         </Grid>
 

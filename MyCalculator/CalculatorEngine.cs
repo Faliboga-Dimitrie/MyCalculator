@@ -100,6 +100,12 @@ namespace MyCalculator
 
         private void UpdateDisplay()
         {
+            if (NumerationBase != 10)
+            {
+                Display = string.Join(" ", UserInput.Select(x => Convert.ToString(Convert.ToInt32(x), NumerationBase)));
+                return;
+            }
+
             if (IsDigitGrouping)
             {
                 Display = string.Join(" ", UserInput.Select(FormatNumberIfPossible));
@@ -110,9 +116,20 @@ namespace MyCalculator
             }
         }
 
+        private void ConvertCurrentInputFromHexToDec()
+        {
+            double decValue = (double)Convert.ToInt32(CurrentInput, 16);
+            CurrentInput = decValue.ToString();
+        }
+
         public void AddDigit(string argNumber)
         {
             CurrentInput += argNumber;
+
+            if (NumerationBase == 16)
+            {
+                ConvertCurrentInputFromHexToDec();
+            }
 
             if (UserInput.Count > 0 && !IsBinaryOperator(UserInput[UserInput.Count - 1]) && !IsUnaryOperator(UserInput[UserInput.Count - 1]))
             {
@@ -228,13 +245,23 @@ namespace MyCalculator
 
         public string DisplayResult
         {
-            get { 
-
-                if (_result != (int)_result || !IsDigitGrouping)
+            get
+            {
+                if (double.IsNaN(Result))
                 {
-                    return _result.ToString();
+                    return "Keep it real";
                 }
-                return _result.ToString("N0"); 
+
+                if (NumerationBase != 10)
+                {
+                    return Convert.ToString((int)Result, NumerationBase);
+                }
+
+                if (Result != (int)Result || !IsDigitGrouping)
+                {
+                    return Result.ToString();
+                }
+                return Result.ToString("N0", CultureInfo.InvariantCulture);
             }
         }
 
@@ -247,6 +274,8 @@ namespace MyCalculator
         public void ChangeNumberBase(int numerationBase)
         {
             NumerationBase = numerationBase;
+            Result += 0;
+            UpdateDisplay();
         }
 
         public void ClearInput()
